@@ -7,10 +7,13 @@ import seaborn as sns
 df = pd.read_csv("./data/hr.csv")
 df = df.dropna(axis=0, how="any")
 df = df[df["last_evaluation"] <= 1][df["salary"] != "nme"][df["department"] != "sale"]
-
+#dp_indices是索引
 dp_indices = df.groupby(by="department").indices
-sales_values = df["left"].iloc[dp_indices["sales"]].values
-technical_values = df["left"].iloc[dp_indices["technical"]]
+sales_values = df["left"].iloc[dp_indices["sales"]]
+
+print("dp_indices['left']",df["left"].iloc[dp_indices["sales"]].values)
+technical_values = df["left"].iloc[dp_indices["technical"]].values
+#t检验
 print(ss.ttest_ind(sales_values,technical_values))
 dp_keys = list(dp_indices.keys())
 dp_t_mat = np.zeros([len(dp_keys),len(dp_keys)])

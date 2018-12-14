@@ -13,13 +13,15 @@ df = df[df["last_evaluation"] <= 1][df["salary"] != "nme"][df["department"] != "
 
 import seaborn as sns
 import matplotlib.pyplot as plt
-#普通版饼图
+
+# 普通版饼图
 lbs = df["department"].value_counts().index
-plt.pie(df["department"].value_counts(normalize=True),labels=lbs,autopct="%1.1f%%")
+plt.pie(df["department"].value_counts(normalize=True), labels=lbs, autopct="%1.1f%%")
 plt.show()
-#暴露某因子，没弄懂这种写法
-explodes = [0.1 if i=="sales" else 0 for i in lbs]
-#autopct显示数字
-#explodes暴露因子
-plt.pie(df["department"].value_counts(normalize=True),explode=explodes,labels=lbs,autopct="%1.1f%%",colors=sns.color_palette("Reds"))
+# 暴露某因子，没弄懂这种写法
+explodes = [0.1 if i == "sales" else 0 for i in lbs]
+# autopct显示数字
+# explodes暴露因子
+plt.pie(df["department"].value_counts(normalize=True), explode=explodes, labels=lbs, autopct="%1.1f%%",
+        colors=sns.color_palette("Reds"))
 plt.show()
