@@ -92,13 +92,20 @@ def hr_modeling(features, label):
     from sklearn.tree import DecisionTreeClassifier
     from sklearn.externals.six import StringIO
     from sklearn.tree import export_graphviz
+    from sklearn.svm import SVC
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.ensemble import AdaBoostClassifier
     models = []
-    # models.append(("KNN", KNeighborsClassifier(n_neighbors=3)))
-    # models.append(("GaussianNB", GaussianNB()))
-    # models.append(("BernoulliNB", BernoulliNB()))
-    # 使用决策树要注释掉前者，否则报NotFittedError
+    models.append(("KNN", KNeighborsClassifier(n_neighbors=3)))
+    models.append(("GaussianNB", GaussianNB()))
+    models.append(("BernoulliNB", BernoulliNB()))
     models.append(("DecisionTree", DecisionTreeClassifier()))
     models.append(("DecisionTreeEntropy", DecisionTreeClassifier(criterion="entropy")))
+    #C是惩罚度，越高精准度越高，运算速度越慢
+    models.append(("SVM Classifier",SVC(C=1000)))
+    models.append(("OriginalRandomForest",RandomForestClassifier()))
+    models.append(("RandomForest", RandomForestClassifier(n_estimators=1000,max_features=None)))
+    models.append(("AdaBoost",AdaBoostClassifier(n_estimators=1000)))
     for clf_name, clf in models:
         clf.fit(X_train, Y_train)
         xy_lst = [(X_train, Y_train), (X_validation, Y_validation), (X_test, Y_test)]
@@ -111,11 +118,6 @@ def hr_modeling(features, label):
             print(clf_name, "ACC:", accuracy_score(Y_part, Y_pred))
             print(clf_name, "REC:", recall_score(Y_part, Y_pred))
             print(clf_name, "F1", f1_score(Y_part, Y_pred))
-            dot_data = StringIO()
-            export_graphviz(clf, out_file=dot_data, feature_names=f_names, class_names=["NL", "L"],
-                                       filled=True, rounded=True, special_characters=True)
-            graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
-            graph.write_pdf("./pdf/dt_tree.pdf")
 
 
 def main():
