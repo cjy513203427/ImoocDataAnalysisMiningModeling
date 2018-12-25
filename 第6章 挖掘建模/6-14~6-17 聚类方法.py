@@ -13,6 +13,7 @@ print(circles)
 colors = "cmykbgr"
 #定义circle,moon,blob,random_data的数据
 data = [circles,moons,blobs,random_data]
+#不聚类、Kmeans聚类、DBSCAN聚类、层次聚类
 models = [("NoneCluster",None),("Kmeans",KMeans(n_clusters=3)),
 ("DBSCAN",DBSCAN(min_samples=3,eps=0.2)),("Agglomerative",AgglomerativeClustering(n_clusters=3,linkage="ward"))]
 f = plt.figure()
