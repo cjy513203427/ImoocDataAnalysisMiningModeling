@@ -91,23 +91,34 @@ def hr_modeling(features, label):
     mdl.add(Activation("sigmoid"))
     mdl.add(Dense(2))
     mdl.add(Activation("softmax"))
-    #最陡梯度下降，lr：学习率
+    # 最陡梯度下降，lr：学习率
     sgd = SGD(lr=0.03)
-    #adam优化器提升性能显著
+    # adam优化器提升性能显著
     mdl.compile(loss="mean_squared_error", optimizer="adam")
-    #输出结果，Loss是损失值
-    #epochs:Number of epochs to train the model;batch_size:Number of samples per evaluation step.
-    mdl.fit(X_train, np.array([[0, 1] if i == 1 else [1,0] for i in Y_train]), epochs=1000, batch_size=2048)
+    # 输出结果，Loss是损失值
+    # epochs:Number of epochs to train the model;batch_size:Number of samples per evaluation step.
+    mdl.fit(X_train, np.array([[0, 1] if i == 1 else [1, 0] for i in Y_train]), epochs=1000, batch_size=8999)
     xy_lst = [(X_train, Y_train), (X_validation, Y_validation), (X_test, Y_test)]
+    import matplotlib.pyplot as plt
+    from sklearn.metrics import roc_curve,roc_auc_score,auc
+    f = plt.figure()
     # 对代码6-2的优化
     for i in range(len(xy_lst)):
         X_part = xy_lst[i][0]
         Y_part = xy_lst[i][1]
-        Y_pred = mdl.predict_classes(X_part)
-        print(i)
-        print("NN", "ACC:", accuracy_score(Y_part, Y_pred))
-        print("NN", "REC:", recall_score(Y_part, Y_pred))
-        print("NN", "F1", f1_score(Y_part, Y_pred))
+        Y_pred = mdl.predict(X_part)
+        # print(Y_pred)
+        Y_pred = np.array(Y_pred[:,1]).reshape((1,-1))[0]
+        # print(i)
+        # print("NN", "ACC:", accuracy_score(Y_part, Y_pred))
+        # print("NN", "REC:", recall_score(Y_part, Y_pred))
+        # print("NN", "F1", f1_score(Y_part, Y_pred))
+        f.add_subplot(1,3,i+1)
+        fpr,tpr,threshold = roc_curve(Y_part,Y_pred)
+        plt.plot(fpr,tpr)
+        print("NN","AUC",auc(fpr,tpr))
+        print("NN","AUC_Score",roc_auc_score(Y_part,Y_pred))
+    plt.show()
     return
 
     models = []
@@ -122,7 +133,7 @@ def hr_modeling(features, label):
     # models.append(("RandomForest", RandomForestClassifier(n_estimators=1000,max_features=None)))
     # models.append(("AdaBoost",AdaBoostClassifier(n_estimators=1000)))
     # 优化参数依然Logistic依然效果不好，
-    models.append(("LogisticRegression", LogisticRegression(C=1000, tol=1e-10, solver="sag", max_iter=10000)))
+    models.append(("LogisticRegression", LogisticRegression(C=1000, tol=1e-10, solver="sag", max_iter=2999)))
     for clf_name, clf in models:
         clf.fit(X_train, Y_train)
         xy_lst = [(X_train, Y_train), (X_validation, Y_validation), (X_test, Y_test)]
@@ -149,9 +160,11 @@ def regr_test(features, label):
     regr.fit(features.values, label.values)
     Y_pred = regr.predict(features.values)
     print("Coef:", regr.coef_)
-    from sklearn.metrics import mean_squared_error
+    from sklearn.metrics import mean_squared_error,mean_absolute_error,r2_score
     # 误差
     print("MSE:", mean_squared_error(Y_pred, label.values))
+    print("MAE:",mean_absolute_error(Y_pred,label.values))
+    print("R2:",r2_score(Y_pred,label.values))
     pass
 
 
