@@ -91,13 +91,13 @@ def hr_modeling(features, label):
     mdl.add(Activation("sigmoid"))
     mdl.add(Dense(2))
     mdl.add(Activation("softmax"))
-    #最陡梯度下降，lr：学习率
+    # 最陡梯度下降，lr：学习率
     sgd = SGD(lr=0.03)
-    #adam优化器提升性能显著
+    # adam优化器提升性能显著
     mdl.compile(loss="mean_squared_error", optimizer="adam")
-    #输出结果，Loss是损失值
-    #epochs:Number of epochs to train the model;batch_size:Number of samples per evaluation step.
-    mdl.fit(X_train, np.array([[0, 1] if i == 1 else [1,0] for i in Y_train]), epochs=1000, batch_size=2048)
+    # 输出结果，Loss是损失值
+    # epochs:Number of epochs to train the model;batch_size:Number of samples per evaluation step.
+    mdl.fit(X_train, np.array([[0, 1] if i == 1 else [1, 0] for i in Y_train]), epochs=1000, batch_size=2048)
     xy_lst = [(X_train, Y_train), (X_validation, Y_validation), (X_test, Y_test)]
     # 对代码6-2的优化
     for i in range(len(xy_lst)):
